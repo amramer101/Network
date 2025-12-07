@@ -1,0 +1,357 @@
+================================================================================
+                    ROUTER CONFIGURATION GUIDE
+                  Cisco Packet Tracer Network Setup
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROUTER 0 (ISP Gateway / Core Router)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hostname: CORE-ROUTER-0
+
+Interface Configuration:
+─────────────────────────
+Interface: FastEthernet0/0
+  IP Address: 10.0.0.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable (no shutdown)
+  Description: Connection to Branch1 Router
+
+Interface: FastEthernet0/1
+  IP Address: 10.0.0.2
+  Subnet Mask: 255.255.255.0
+  Status: Enable (no shutdown)
+  Description: Connection to Branch2 Router
+
+Interface: FastEthernet0/2
+  IP Address: 10.0.0.3
+  Subnet Mask: 255.255.255.0
+  Status: Enable (no shutdown)
+  Description: Connection to Branch3 Router
+
+Routing Configuration:
+──────────────────────
+Static Routes:
+  Route 1: To Branch1 VLAN
+    Destination: 192.168.0.0 / 255.255.192.0 (192.168.0.0/18)
+    Next Hop: 10.0.1.1 (Router1)
+    
+  Route 2: To Branch2 VLAN
+    Destination: 192.168.64.0 / 255.255.192.0 (192.168.64.0/18)
+    Next Hop: 10.0.2.1 (Router2)
+    
+  Route 3: To Branch3 VLAN + Server
+    Destination: 192.168.128.0 / 255.255.128.0 (192.168.128.0/17)
+    Next Hop: 10.0.3.1 (Router3)
+
+CLI Configuration:
+──────────────────
+enable
+configure terminal
+hostname CORE-ROUTER-0
+
+interface FastEthernet0/0
+  ip address 10.0.0.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/1
+  ip address 10.0.0.2 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/2
+  ip address 10.0.0.3 255.255.255.0
+  no shutdown
+
+ip route 192.168.0.0 255.255.192.0 10.0.1.1
+ip route 192.168.64.0 255.255.192.0 10.0.2.1
+ip route 192.168.128.0 255.255.128.0 10.0.3.1
+
+exit
+end
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROUTER 1 (Branch 1 Router)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hostname: BRANCH1-ROUTER-1
+
+Interface Configuration:
+─────────────────────────
+Interface: FastEthernet0/0 (To Core Router)
+  IP Address: 10.0.1.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Uplink to Core Router0
+
+Interface: FastEthernet0/1 (To Switch1)
+  IP Address: 192.168.10.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN10 (HR Department)
+
+Interface: FastEthernet0/2 (To Switch2)
+  IP Address: 192.168.20.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN20 (IT Department)
+
+Interface: FastEthernet0/3 (To Switch3)
+  IP Address: 192.168.30.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN30 (Sales)
+
+Sub-interface Configuration (If using Trunk):
+──────────────────────────────────────────────
+Interface: FastEthernet0/1.10
+  Encapsulation: 802.1Q (VLAN 10)
+  IP Address: 192.168.10.1 255.255.255.0
+
+Interface: FastEthernet0/1.20
+  Encapsulation: 802.1Q (VLAN 20)
+  IP Address: 192.168.20.1 255.255.255.0
+
+Interface: FastEthernet0/1.30
+  Encapsulation: 802.1Q (VLAN 30)
+  IP Address: 192.168.30.1 255.255.255.0
+
+Routing Configuration:
+──────────────────────
+Default Route:
+  Route: 0.0.0.0 / 0.0.0.0
+  Next Hop: 10.0.0.1 (Core Router)
+  
+Static Routes to Other Branches:
+  Route 1: To Branch2 (192.168.40.0/22, 192.168.44.0/22)
+    Destination: 192.168.40.0 / 255.255.252.0
+    Next Hop: 10.0.0.1
+    
+  Route 2: To Branch3 (192.168.48.0+ & Server)
+    Destination: 192.168.48.0 / 255.255.240.0
+    Next Hop: 10.0.0.1
+
+CLI Configuration:
+──────────────────
+enable
+configure terminal
+hostname BRANCH1-ROUTER-1
+
+interface FastEthernet0/0
+  ip address 10.0.1.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/1
+  ip address 192.168.10.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/2
+  ip address 192.168.20.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/3
+  ip address 192.168.30.1 255.255.255.0
+  no shutdown
+
+ip route 0.0.0.0 0.0.0.0 10.0.0.1
+ip route 192.168.40.0 255.255.252.0 10.0.0.1
+ip route 192.168.48.0 255.255.240.0 10.0.0.1
+
+exit
+end
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROUTER 2 (Branch 2 Router)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hostname: BRANCH2-ROUTER-2
+
+Interface Configuration:
+─────────────────────────
+Interface: FastEthernet0/0 (To Core Router)
+  IP Address: 10.0.2.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Uplink to Core Router0
+
+Interface: FastEthernet0/1 (To Switch4)
+  IP Address: 192.168.40.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN40 (Operations 1)
+
+Interface: FastEthernet0/2 (To Switch5)
+  IP Address: 192.168.50.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN50 (Operations 2)
+
+Routing Configuration:
+──────────────────────
+Default Route:
+  Route: 0.0.0.0 / 0.0.0.0
+  Next Hop: 10.0.0.1 (Core Router)
+
+Static Routes:
+  Route 1: To Branch1
+    Destination: 192.168.10.0 / 255.255.240.0
+    Next Hop: 10.0.0.1
+    
+  Route 2: To Branch3
+    Destination: 192.168.48.0 / 255.255.240.0
+    Next Hop: 10.0.0.1
+
+CLI Configuration:
+──────────────────
+enable
+configure terminal
+hostname BRANCH2-ROUTER-2
+
+interface FastEthernet0/0
+  ip address 10.0.2.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/1
+  ip address 192.168.40.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/2
+  ip address 192.168.50.1 255.255.255.0
+  no shutdown
+
+ip route 0.0.0.0 0.0.0.0 10.0.0.1
+ip route 192.168.10.0 255.255.240.0 10.0.0.1
+ip route 192.168.48.0 255.255.240.0 10.0.0.1
+
+exit
+end
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ROUTER 3 (Branch 3 Router)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hostname: BRANCH3-ROUTER-3
+
+Interface Configuration:
+─────────────────────────
+Interface: FastEthernet0/0 (To Core Router)
+  IP Address: 10.0.3.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Uplink to Core Router0
+
+Interface: FastEthernet0/1 (To Switch6)
+  IP Address: 192.168.60.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN60 (Support Team)
+
+Interface: FastEthernet0/2 (To Server/Management)
+  IP Address: 192.168.70.1
+  Subnet Mask: 255.255.255.0
+  Status: Enable
+  Description: Gateway for VLAN70 (Management) & VLAN100 (Servers)
+
+Routing Configuration:
+──────────────────────
+Default Route:
+  Route: 0.0.0.0 / 0.0.0.0
+  Next Hop: 10.0.0.1 (Core Router)
+
+Static Routes:
+  Route 1: To Branch1 (All VLANS)
+    Destination: 192.168.10.0 / 255.255.240.0
+    Next Hop: 10.0.0.1
+    
+  Route 2: To Branch2
+    Destination: 192.168.40.0 / 255.255.252.0
+    Next Hop: 10.0.0.1
+
+CLI Configuration:
+──────────────────
+enable
+configure terminal
+hostname BRANCH3-ROUTER-3
+
+interface FastEthernet0/0
+  ip address 10.0.3.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/1
+  ip address 192.168.60.1 255.255.255.0
+  no shutdown
+
+interface FastEthernet0/2
+  ip address 192.168.70.1 255.255.255.0
+  no shutdown
+
+ip route 0.0.0.0 0.0.0.0 10.0.0.1
+ip route 192.168.10.0 255.255.240.0 10.0.0.1
+ip route 192.168.40.0 255.255.252.0 10.0.0.1
+
+exit
+end
+
+
+================================================================================
+                       ROUTING TABLE SUMMARY
+================================================================================
+
+CORE ROUTER (Router0) Routing Table:
+────────────────────────────────────
+C    10.0.0.0/24 is directly connected, FastEthernet0/0
+C    10.0.0.0/24 is directly connected, FastEthernet0/1
+C    10.0.0.0/24 is directly connected, FastEthernet0/2
+S    192.168.0.0/18 [1/0] via 10.0.1.1
+S    192.168.64.0/18 [1/0] via 10.0.2.1
+S    192.168.128.0/17 [1/0] via 10.0.3.1
+
+
+BRANCH1 ROUTER Routing Table:
+─────────────────────────────
+C    10.0.1.0/24 is directly connected, FastEthernet0/0
+C    192.168.10.0/24 is directly connected, FastEthernet0/1
+C    192.168.20.0/24 is directly connected, FastEthernet0/2
+C    192.168.30.0/24 is directly connected, FastEthernet0/3
+S    0.0.0.0/0 [1/0] via 10.0.0.1
+S    192.168.40.0/22 [1/0] via 10.0.0.1
+S    192.168.48.0/20 [1/0] via 10.0.0.1
+
+
+BRANCH2 ROUTER Routing Table:
+─────────────────────────────
+C    10.0.2.0/24 is directly connected, FastEthernet0/0
+C    192.168.40.0/24 is directly connected, FastEthernet0/1
+C    192.168.50.0/24 is directly connected, FastEthernet0/2
+S    0.0.0.0/0 [1/0] via 10.0.0.1
+S    192.168.10.0/20 [1/0] via 10.0.0.1
+S    192.168.48.0/20 [1/0] via 10.0.0.1
+
+
+BRANCH3 ROUTER Routing Table:
+─────────────────────────────
+C    10.0.3.0/24 is directly connected, FastEthernet0/0
+C    192.168.60.0/24 is directly connected, FastEthernet0/1
+C    192.168.70.0/24 is directly connected, FastEthernet0/2
+S    0.0.0.0/0 [1/0] via 10.0.0.1
+S    192.168.10.0/20 [1/0] via 10.0.0.1
+S    192.168.40.0/22 [1/0] via 10.0.0.1
+
+
+================================================================================
+                    CONFIGURATION NOTES
+================================================================================
+
+✓ All routers use FastEthernet interfaces
+✓ Default route on branch routers points to core router
+✓ Static routes configured for inter-branch communication
+✓ Subnet masks are Class C (/24) for all networks
+✓ No OSPF or RIP protocol (static routing only)
+✓ All interfaces set to "no shutdown" for active state
+✓ Loopback interfaces can be added for management (optional)
+
+Created: December 6, 2025
+Version: 1.0
+Status: Production Ready

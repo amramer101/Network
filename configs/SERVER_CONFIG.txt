@@ -1,0 +1,470 @@
+================================================================================
+                    SERVER CONFIGURATION GUIDE
+                  Central Server Setup & Services
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SERVER OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Server Name: CENTRAL-SERVER-1
+Location: Branch3 - Data Center
+Connection: Switch6 (Gi0/1)
+VLAN: 100 (Server VLAN)
+Role: 
+  - Primary DNS Server
+  - Web Server
+  - Database Server
+  - File Server
+  - Email Server (Optional)
+
+Operating System: Linux (Ubuntu Server 20.04 LTS) or Windows Server 2019
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NETWORK CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Basic Network Settings:
+──────────────────────
+Hostname: central-server-1
+IP Address: 192.168.100.10
+Subnet Mask: 255.255.255.0 (/24)
+Default Gateway: 192.168.100.1 (Router3 Fi0/2)
+DNS Primary: 127.0.0.1 (Self)
+DNS Secondary: 8.8.8.8 (Google)
+VLAN: 100
+MAC Address: 00:1A:2B:3C:4D:5E (Auto-generated)
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LINUX SERVER CONFIGURATION (Ubuntu)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1: Network Interface Configuration
+────────────────────────────────────────
+File: /etc/netplan/00-installer-config.yaml
+
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: no
+      dhcp6: no
+      addresses:
+        - address: 192.168.100.10/24
+      routes:
+        - to: 0.0.0.0/0
+          via: 192.168.100.1
+      nameservers:
+        addresses: [127.0.0.1, 8.8.8.8]
+        search: [company.local]
+
+
+Apply Network Config:
+$ sudo netplan apply
+
+
+Step 2: Install Required Services
+──────────────────────────────────
+
+1. DNS Server (BIND9):
+   $ sudo apt update
+   $ sudo apt install bind9 bind9-utils bind9-doc
+   
+   Configuration File: /etc/bind/named.conf.local
+   Add Zone Files in: /etc/bind/zones/
+
+
+2. Web Server (Apache2):
+   $ sudo apt install apache2 apache2-utils
+   $ sudo systemctl start apache2
+   $ sudo systemctl enable apache2
+   
+   Document Root: /var/www/html
+   Config File: /etc/apache2/apache2.conf
+
+
+3. Database Server (MySQL/MariaDB):
+   $ sudo apt install mysql-server
+   $ sudo mysql_secure_installation
+   $ sudo systemctl start mysql
+   $ sudo systemctl enable mysql
+   
+   Data Directory: /var/lib/mysql
+   Config File: /etc/mysql/mysql.conf.d/mysqld.cnf
+
+
+4. File Server (Samba - Optional):
+   $ sudo apt install samba samba-common-bin
+   $ sudo systemctl start smbd
+   $ sudo systemctl enable smbd
+   
+   Config File: /etc/samba/smb.conf
+   Shared Directory: /srv/samba/shared
+
+
+Step 3: DNS Configuration
+─────────────────────────
+File: /etc/bind/named.conf.local
+
+zone "company.local" {
+  type master;
+  file "/etc/bind/zones/db.company.local";
+};
+
+zone "100.168.192.in-addr.arpa" {
+  type master;
+  file "/etc/bind/zones/db.192.168.100";
+};
+
+
+Forward Zone File: /etc/bind/zones/db.company.local
+
+$TTL 604800
+@       IN      SOA     central-server-1.company.local. admin.company.local. (
+                        2025120601      ; Serial
+                        604800          ; Refresh
+                        86400           ; Retry
+                        2419200         ; Expire
+                        604800 )        ; Minimum TTL
+
+@       IN      NS      central-server-1.company.local.
+@       IN      A       192.168.100.10
+
+central-server-1       IN      A       192.168.100.10
+mail                   IN      A       192.168.100.10
+web                    IN      A       192.168.100.10
+db                     IN      A       192.168.100.10
+
+
+Step 4: Web Server Configuration
+────────────────────────────────
+File: /etc/apache2/sites-available/000-default.conf
+
+<VirtualHost *:80>
+    ServerName central-server-1.company.local
+    ServerAlias web.company.local
+    DocumentRoot /var/www/html
+    
+    <Directory /var/www/html>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+    
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+
+Enable and Restart:
+$ sudo a2ensite 000-default
+$ sudo a2enmod rewrite
+$ sudo systemctl restart apache2
+
+
+Step 5: Create Default Web Page
+───────────────────────────────
+File: /var/www/html/index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Central Server - Network Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { background: #f0f0f0; padding: 20px; border-radius: 5px; }
+        h1 { color: #333; }
+        .status { background: green; color: white; padding: 10px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖥️ Central Server Status</h1>
+        <p class="status">✓ Server Online and Running</p>
+        
+        <h2>Server Information:</h2>
+        <ul>
+            <li>Hostname: central-server-1</li>
+            <li>IP Address: 192.168.100.10</li>
+            <li>VLAN: 100</li>
+            <li>Status: Operational</li>
+        </ul>
+        
+        <h2>Available Services:</h2>
+        <ul>
+            <li>DNS Server (Port 53)</li>
+            <li>Web Server (Port 80, 443)</li>
+            <li>Database Server (Port 3306)</li>
+            <li>File Server (Port 445)</li>
+        </ul>
+        
+        <h2>Network Status:</h2>
+        <table border="1" style="border-collapse: collapse; padding: 10px;">
+            <tr>
+                <th>Component</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Network Interface</td>
+                <td style="color: green;">✓ Active</td>
+            </tr>
+            <tr>
+                <td>DNS Service</td>
+                <td style="color: green;">✓ Running</td>
+            </tr>
+            <tr>
+                <td>Web Service</td>
+                <td style="color: green;">✓ Running</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td style="color: green;">✓ Running</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
+
+
+Step 6: Firewall Configuration (UFW)
+─────────────────────────────────────
+Enable firewall:
+$ sudo ufw enable
+
+Allow Required Ports:
+$ sudo ufw allow 22/tcp      # SSH
+$ sudo ufw allow 53/tcp      # DNS TCP
+$ sudo ufw allow 53/udp      # DNS UDP
+$ sudo ufw allow 80/tcp      # HTTP
+$ sudo ufw allow 443/tcp     # HTTPS
+$ sudo ufw allow 3306/tcp    # MySQL
+$ sudo ufw allow 445/tcp     # Samba
+
+
+Verify Firewall Status:
+$ sudo ufw status
+
+
+Step 7: Start All Services
+───────────────────────────
+$ sudo systemctl start bind9
+$ sudo systemctl start apache2
+$ sudo systemctl start mysql
+
+Enable at Startup:
+$ sudo systemctl enable bind9
+$ sudo systemctl enable apache2
+$ sudo systemctl enable mysql
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+WINDOWS SERVER CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1: Network Configuration
+─────────────────────────────
+1. Open Settings > Network & Internet
+2. Click "Change adapter options"
+3. Right-click "Ethernet" > Properties
+4. Select "Internet Protocol Version 4 (TCP/IPv4)"
+5. Enter:
+   - IP Address: 192.168.100.10
+   - Subnet Mask: 255.255.255.0
+   - Default Gateway: 192.168.100.1
+   - Preferred DNS: 127.0.0.1
+   - Alternate DNS: 8.8.8.8
+6. Click OK
+
+
+Step 2: Install Server Roles
+────────────────────────────
+Add Roles via Server Manager:
+
+1. DNS Server
+   - Add Role > DNS Server
+   - Configure DNS Zones
+   - Add Forward Lookup Zones
+
+
+2. IIS (Web Server)
+   - Add Role > Web Server (IIS)
+   - Install required features
+   - Create website
+
+
+3. SQL Server
+   - Download SQL Server Express
+   - Install with default settings
+   - Configure TCP/IP
+
+
+Step 3: Configure DNS
+─────────────────────
+1. Open DNS Manager
+2. Create Forward Lookup Zone: company.local
+3. Add A Records:
+   - central-server-1 → 192.168.100.10
+   - web → 192.168.100.10
+   - mail → 192.168.100.10
+   - db → 192.168.100.10
+4. Create Reverse Lookup Zone: 100.168.192.in-addr.arpa
+5. Add PTR Records for IP→Hostname mapping
+
+
+Step 4: Configure IIS Website
+──────────────────────────────
+1. Open IIS Manager
+2. Create new Website:
+   - Site Name: Server Portal
+   - Physical Path: C:\inetpub\wwwroot
+   - Binding: HTTP, Port 80, Hostname: web.company.local
+3. Deploy HTML files
+4. Test: http://192.168.100.10
+
+
+Step 5: Database Setup
+──────────────────────
+1. Open SQL Server Management Studio
+2. Create Database: CompanyDB
+3. Create User: dbadmin
+4. Grant Permissions: db_owner, db_securityadmin
+5. Configure TCP/IP Port: 1433
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CISCO PACKET TRACER CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+In Cisco Packet Tracer:
+
+1. Add Server Device
+   - Drag "Server" from Device List
+   - Place in Branch3
+
+2. Configure Network
+   - Click Server > Desktop tab
+   - Open IP Configuration
+   - Set Static IP:
+     * IPv4 Address: 192.168.100.10
+     * Subnet Mask: 255.255.255.0
+     * Default Gateway: 192.168.100.1
+     * DNS Server: 192.168.100.10
+
+3. Connect to Switch6
+   - Connect Server to Switch6 Gi0/1
+   - Verify connection status (green)
+
+4. Enable Services (Optional)
+   - Click Server > Services tab
+   - Enable:
+     * HTTP (Web)
+     * HTTPS (Secure Web)
+     * DNS
+     * DHCP (if needed)
+
+5. Test Connectivity
+   - From any PC, ping 192.168.100.10
+   - Results should show connection through network
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SERVICE PORTS & PROTOCOLS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌────────────┬──────┬──────────┬────────────────────────────────────┐
+│ Service    │ Port │ Protocol │ Description                        │
+├────────────┼──────┼──────────┼────────────────────────────────────┤
+│ SSH        │ 22   │ TCP      │ Secure remote access               │
+│ DNS        │ 53   │ TCP/UDP  │ Domain name resolution             │
+│ HTTP       │ 80   │ TCP      │ Web server (unencrypted)           │
+│ HTTPS      │ 443  │ TCP      │ Web server (encrypted)             │
+│ SMTP       │ 25   │ TCP      │ Email send (optional)              │
+│ POP3       │ 110  │ TCP      │ Email receive (optional)           │
+│ MySQL      │ 3306 │ TCP      │ Database server                    │
+│ RDP        │ 3389 │ TCP      │ Remote desktop (Windows)           │
+│ SMB/CIFS   │ 445  │ TCP      │ File sharing (Samba)               │
+│ NTP        │ 123  │ UDP      │ Time synchronization               │
+│ DHCP       │ 67   │ UDP      │ Dynamic IP assignment              │
+└────────────┴──────┴──────────┴────────────────────────────────────┘
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TESTING CONNECTIVITY TO SERVER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+From PC (Any VLAN):
+
+1. Test Basic Connectivity:
+   $ ping 192.168.100.10
+   Expected: Replies received
+
+2. Test Web Server:
+   $ curl http://192.168.100.10
+   Expected: HTML response
+
+3. Test DNS:
+   $ nslookup central-server-1.company.local 192.168.100.10
+   Expected: IP address resolved
+
+4. Test Database (if applicable):
+   $ mysql -h 192.168.100.10 -u dbadmin -p
+   Expected: MySQL prompt
+
+5. SSH Access:
+   $ ssh admin@192.168.100.10
+   Expected: Remote shell connection
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SERVER MAINTENANCE COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+System Information:
+$ hostnamectl status
+$ ip addr show
+$ df -h
+$ free -m
+$ uptime
+
+Service Management:
+$ sudo systemctl status bind9
+$ sudo systemctl restart apache2
+$ sudo systemctl stop mysql
+$ sudo systemctl enable bind9
+
+Network Diagnostics:
+$ netstat -tulpn
+$ ss -tulpn
+$ nmcli device show
+$ route -n
+
+Firewall Management:
+$ sudo ufw status
+$ sudo ufw enable
+$ sudo ufw disable
+$ sudo ufw allow 80/tcp
+
+
+================================================================================
+                    SERVER SECURITY BEST PRACTICES
+================================================================================
+
+1. ✓ Change default passwords
+2. ✓ Disable unnecessary services
+3. ✓ Enable firewall
+4. ✓ Regular backups
+5. ✓ Update system packages
+6. ✓ Monitor system logs
+7. ✓ Restrict SSH access
+8. ✓ Enable SELinux/AppArmor
+9. ✓ Use SSL certificates for HTTPS
+10. ✓ Implement access control lists
+
+
+================================================================================
+
+Created: December 6, 2025
+Version: 1.0
+Status: Production Ready

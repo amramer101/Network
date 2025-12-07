@@ -1,0 +1,379 @@
+================================================================================
+                    PC CONFIGURATION GUIDE
+                  End Device IP Addressing & Settings
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANCH 1 - HR DEPARTMENT (VLAN 10)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PC1 (HR Employee 1)
+───────────────────
+  Device Name: PC-HR-001
+  Location: HR Office - Desk 1
+  Switch: Switch1
+  Port: Fa0/1
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.10.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.10.254 or 192.168.10.1
+  ├─ DNS Server: 192.168.100.10 (Server)
+  └─ VLAN: 10
+
+  Configuration Steps (Windows):
+  1. Open Network Connections
+  2. Select Ethernet properties
+  3. Set IPv4 Configuration:
+     - IP: 192.168.10.1
+     - Mask: 255.255.255.0
+     - Gateway: 192.168.10.1
+     - DNS: 192.168.100.10
+
+
+PC2 (HR Employee 2)
+───────────────────
+  Device Name: PC-HR-002
+  Location: HR Office - Desk 2
+  Switch: Switch1
+  Port: Fa0/2
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.10.2
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.10.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 10
+
+
+PC3 (HR Employee 3)
+───────────────────
+  Device Name: PC-HR-003
+  Location: HR Office - Desk 3
+  Switch: Switch1
+  Port: Fa0/3
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.10.3
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.10.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 10
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANCH 1 - IT DEPARTMENT (VLAN 20)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PC4 (IT Technician 1)
+─────────────────────
+  Device Name: PC-IT-001
+  Location: IT Lab - Station 1
+  Switch: Switch2
+  Port: Fa0/1
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.20.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.20.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 20
+
+
+PC5 (IT Technician 2)
+─────────────────────
+  Device Name: PC-IT-002
+  Location: IT Lab - Station 2
+  Switch: Switch2
+  Port: Fa0/2
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.20.2
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.20.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 20
+
+
+PC6 (IT Support Officer)
+────────────────────────
+  Device Name: PC-IT-003
+  Location: IT Dept - Help Desk
+  Switch: Switch2
+  Port: Fa0/3
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.20.3
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.20.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 20
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANCH 1 - SALES DEPARTMENT (VLAN 30)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PC7 (Sales Manager)
+───────────────────
+  Device Name: PC-SALES-001
+  Location: Sales Office - Manager's Desk
+  Switch: Switch3
+  Port: Fa0/1
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.30.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.30.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 30
+
+
+PC8 (Sales Representative 1)
+────────────────────────────
+  Device Name: PC-SALES-002
+  Location: Sales Office - Desk 1
+  Switch: Switch3
+  Port: Fa0/2
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.30.2
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.30.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 30
+
+
+PC9 (Sales Representative 2)
+────────────────────────────
+  Device Name: PC-SALES-003
+  Location: Sales Office - Desk 2
+  Switch: Switch3
+  Port: Fa0/3
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.30.3
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.30.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 30
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANCH 2 - OPERATIONS GROUP 1 (VLAN 40)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PC10 (Operations Lead 1)
+────────────────────────
+  Device Name: PC-OPS1-001
+  Location: Operations Center - Station 1
+  Switch: Switch4
+  Port: Fa0/1
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.40.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.40.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 40
+
+
+PC11 (Operations Staff 1)
+─────────────────────────
+  Device Name: PC-OPS1-002
+  Location: Operations Center - Station 2
+  Switch: Switch4
+  Port: Fa0/2
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.40.2
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.40.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 40
+
+
+PC12 (Operations Staff 2)
+─────────────────────────
+  Device Name: PC-OPS1-003
+  Location: Operations Center - Station 3
+  Switch: Switch4
+  Port: Fa0/3
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.40.3
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.40.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 40
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANCH 2 - OPERATIONS GROUP 2 (VLAN 50)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PC13 (Operations Shift Manager)
+───────────────────────────────
+  Device Name: PC-OPS2-001
+  Location: Operations Center - Shift Mgr Desk
+  Switch: Switch5
+  Port: Fa0/1
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.50.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.50.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 50
+
+
+PC14 (Operations Support)
+─────────────────────────
+  Device Name: PC-OPS2-002
+  Location: Operations Center - Support Desk
+  Switch: Switch5
+  Port: Fa0/2
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.50.2
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.50.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 50
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRANCH 3 - SUPPORT TEAM & MANAGEMENT (VLAN 60 & 70)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PC15 (Support Engineer)
+───────────────────────
+  Device Name: PC-SUPPORT-001
+  Location: Support Center - Help Desk
+  Switch: Switch6
+  Port: Fa0/1
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.60.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.60.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 60
+
+
+PC16 (System Administrator)
+───────────────────────────
+  Device Name: PC-ADMIN-001
+  Location: Management Suite - Admin Office
+  Switch: Switch6
+  Port: Fa0/2
+  
+  Network Configuration:
+  ├─ IP Address: 192.168.70.1
+  ├─ Subnet Mask: 255.255.255.0
+  ├─ Default Gateway: 192.168.70.1
+  ├─ DNS Server: 192.168.100.10
+  └─ VLAN: 70
+
+
+================================================================================
+                    PC ADDRESSING SUMMARY TABLE
+================================================================================
+
+┌─────┬──────────────────┬────────────────────┬───────┬─────────┬──────────────┐
+│ PC# │ Device Name      │ IP Address         │ VLAN  │ Switch  │ Description  │
+├─────┼──────────────────┼────────────────────┼───────┼─────────┼──────────────┤
+│ 1   │ PC-HR-001        │ 192.168.10.1       │ VLAN10│ Switch1 │ HR Staff     │
+│ 2   │ PC-HR-002        │ 192.168.10.2       │ VLAN10│ Switch1 │ HR Staff     │
+│ 3   │ PC-HR-003        │ 192.168.10.3       │ VLAN10│ Switch1 │ HR Staff     │
+│ 4   │ PC-IT-001        │ 192.168.20.1       │ VLAN20│ Switch2 │ IT Tech 1    │
+│ 5   │ PC-IT-002        │ 192.168.20.2       │ VLAN20│ Switch2 │ IT Tech 2    │
+│ 6   │ PC-IT-003        │ 192.168.20.3       │ VLAN20│ Switch2 │ IT Support   │
+│ 7   │ PC-SALES-001     │ 192.168.30.1       │ VLAN30│ Switch3 │ Sales Mgr    │
+│ 8   │ PC-SALES-002     │ 192.168.30.2       │ VLAN30│ Switch3 │ Sales Rep 1  │
+│ 9   │ PC-SALES-003     │ 192.168.30.3       │ VLAN30│ Switch3 │ Sales Rep 2  │
+│ 10  │ PC-OPS1-001      │ 192.168.40.1       │ VLAN40│ Switch4 │ Ops Lead 1   │
+│ 11  │ PC-OPS1-002      │ 192.168.40.2       │ VLAN40│ Switch4 │ Ops Staff 1  │
+│ 12  │ PC-OPS1-003      │ 192.168.40.3       │ VLAN40│ Switch4 │ Ops Staff 2  │
+│ 13  │ PC-OPS2-001      │ 192.168.50.1       │ VLAN50│ Switch5 │ Ops Shift M. │
+│ 14  │ PC-OPS2-002      │ 192.168.50.2       │ VLAN50│ Switch5 │ Ops Support  │
+│ 15  │ PC-SUPPORT-001   │ 192.168.60.1       │ VLAN60│ Switch6 │ Support Eng  │
+│ 16  │ PC-ADMIN-001     │ 192.168.70.1       │ VLAN70│ Switch6 │ System Admin │
+└─────┴──────────────────┴────────────────────┴───────┴─────────┴──────────────┘
+
+
+================================================================================
+                    COMMON CONFIGURATION STEPS
+================================================================================
+
+For Each PC in Cisco Packet Tracer:
+
+1. Click on PC device
+2. Select Desktop tab
+3. Open IP Configuration
+4. Select "Static" (not DHCP)
+5. Enter:
+   - IPv4 Address: [From table above]
+   - Subnet Mask: 255.255.255.0
+   - Default Gateway: [Router IP for respective VLAN]
+   - DNS Server: 192.168.100.10
+6. Click OK/Apply
+
+Alternative: Command Line (For Server OS):
+
+$ sudo nano /etc/network/interfaces
+
+Add:
+  auto eth0
+  iface eth0 inet static
+    address 192.168.XX.X
+    netmask 255.255.255.0
+    gateway 192.168.XX.1
+    dns-nameservers 192.168.100.10
+
+Then:
+$ sudo systemctl restart networking
+$ ip addr show
+
+
+================================================================================
+                    TESTING CONNECTIVITY
+================================================================================
+
+After Configuration:
+
+1. From any PC, ping the router of its VLAN:
+   ping 192.168.10.1 (for VLAN10)
+   
+2. From any PC, ping another VLAN's gateway:
+   ping 192.168.20.1 (from VLAN10 PC)
+   
+3. Ping the server:
+   ping 192.168.100.10
+   
+4. Trace route to other PCs:
+   tracert 192.168.30.1 (from VLAN10)
+
+Expected Results:
+✓ Same VLAN: Direct connection (low latency)
+✓ Different VLAN: Through router (higher latency)
+✓ Server: Should be reachable from all VLANs
+✓ Internet: Through default route to Router0
+
+
+================================================================================
+                    CONFIGURATION NOTES
+================================================================================
+
+✓ All PCs use Static IP configuration
+✓ DNS points to Server (192.168.100.10)
+✓ Default Gateway is the router interface IP
+✓ Subnet mask is /24 for all (255.255.255.0)
+✓ No DHCP server configured (manual assignment)
+✓ All devices have unique IPs within their VLAN
+✓ VLAN segregation enforced by switches
+✓ Inter-VLAN routing handled by routers
+
+Created: December 6, 2025
+Version: 1.0
+Status: Production Ready
