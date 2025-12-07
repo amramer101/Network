@@ -12,6 +12,11 @@ This is a complete enterprise network infrastructure project built with **Cisco 
 
 ## 🏗️ Architecture
 
+
+![Network Design Architecture](ARCH)
+
+---
+
 ### Network Topology
 - **4 Routers** (1 Core + 3 Branch)
 - **6 Switches** (with VLAN configuration)
